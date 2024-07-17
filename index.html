@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS-style Photo Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+
+<body>
+    <div id="gallery" class="gallery"></div>
+
+    <div id="fullscreenViewer" class="fullscreen-viewer">
+        <div id="imageContainer" class="image-container"></div>
+        <div id="thumbnailContainer" class="thumbnail-container"></div>
+        <div class="viewer-footer">
+            <button id="closeViewer">Close</button>
+            <button id="shareButton">Share</button>
+        </div>
+    </div>
+
+    <div id="shareMenu" class="share-menu">
+        <button class="share-option" data-action="line"><i class="fab fa-line"></i> Line</button>
+        <button class="share-option" data-action="copy"><i class="fas fa-copy"></i> Copy Link</button>
+        <button class="share-option" data-action="email"><i class="fas fa-envelope"></i> Email</button>
+        <button class="share-option" data-action="message"><i class="fas fa-comment"></i> Message</button>
+        <button class="share-option" data-action="whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+    </div>
+
+    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
