@@ -5,17 +5,37 @@ body {
     background-color: #000;
 }
 
+.gallery-controls {
+    position: fixed;
+    background-color: #eee;
+    top: 0;
+    width: 100%;
+    padding: 2px;
+    text-align: right;
+}
+
+#saveFavorite.active {
+    color: red;
+}
+
 .gallery {
+    margin-top: 10px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 2px;
     padding: 2px;
 }
 
+
+
 .gallery-item {
     aspect-ratio: 1 / 1;
     overflow: hidden;
     background-color: #333;
+}
+
+.item-favorite {
+    border: 2px solid red;
 }
 
 .gallery-item img {
