@@ -5,7 +5,7 @@ let currentPage = 0;
 let favoriteProducts = [];
 let shareProductIds = []; 
 let showingFavorites = false;
-let showingShare = false;
+let isShowingShare = false;
 let shareLink = "";
 const itemsPerPage = 20;
 
@@ -28,14 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('toggleFavorites').addEventListener('click', toggleFavoriteView);
     document.getElementById('saveFavorite').addEventListener('click', toggleFavorite);
     document.getElementById('shareFavorites').addEventListener('click', shareFavorite);
-    
+    document.getElementById('clearFavorites').addEventListener('click', clearFavorites);
 });
 
 function loadDataFromHref() {
     if(location.search) {
         let parameters = location.search.replace("?id=", "");
         shareProductIds = parameters.split(",");
-        showingShare = shareProductIds.length > 0;
+        isShowingShare = shareProductIds.length > 0;
     }
     
 }
@@ -64,6 +64,17 @@ function getCookie(name) {
     }
     return null;
 }
+
+function clearFavorites() {
+    favoriteProducts = [];   
+    setCookie('favorites', JSON.stringify(favoriteProducts), 30);  // Store for 30 days
+    
+
+    const gallery = document.getElementById('gallery');
+    gallery.innerHTML = '';
+    loadMoreItems();
+}
+
 function shareFavorite() {
     let Ids = favoriteProducts.map( item => item.id );
     let paramters = Ids.join(",");
@@ -77,8 +88,14 @@ function loadMoreItems() {
     const startIndex = currentPage * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
 
-    if(showingShare) {
+    if(isShowingShare) {
         allProducts = allProducts.filter(item => shareProductIds.indexOf(item.id + "") > -1);
+        const saveFavorite = document.getElementById('saveFavorite');
+        const toggleFavorites = document.getElementById('toggleFavorites');
+        const shareFavorites = document.getElementById('shareFavorites');
+        saveFavorite.hidden = true;
+        toggleFavorites.hidden = true;
+        shareFavorites.hidden = true;
     }
 
     //const productsToLoad = allProducts.slice(startIndex, endIndex);
@@ -89,7 +106,7 @@ function loadMoreItems() {
             const item = document.createElement('div');
             const isFavorite = favoriteProductIds.indexOf(product.id) > -1; 
             console.log(favoriteProducts, isFavorite, product);
-            item.className = isFavorite ? 'gallery-item item-favorite' : 'gallery-item';
+            item.className = isShowingShare ? 'gallery-item' : (isFavorite ? 'gallery-item item-favorite' : 'gallery-item');
             item.innerHTML = '<div style="width: 100%; height: 100%; background-color: #333;"></div>';
             item.addEventListener('click', () => openViewer(product, startIndex + index));
             gallery.appendChild(item);
@@ -242,14 +259,8 @@ document.querySelectorAll('.share-option').forEach(option => {
                 navigator.clipboard.writeText(shareLink)
                     .then(() => alert('Link copied to clipboard!'))
                 break;
-            case 'email':
-                window.location.href = `mailto:?subject=Check out this product&body=${shareLink}`;
-                break;
-            case 'message':
-                window.location.href = `sms:?&body=${shareLink}`;
-                break;
-            case 'whatsapp':
-                window.open(`https://wa.me/?text=${encodeURIComponent(shareLink)}`, '_blank');
+            case 'open':
+                window.open(`${shareLink}`, '_blank');
                 break;
         }
         toggleShareMenu();
