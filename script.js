@@ -249,14 +249,7 @@ document.getElementById('closeViewer').addEventListener('click', () => {
 
 document.getElementById('shareButton').addEventListener('click', () => {
     if (shareLink) {
-        if (navigator.share) {
-            navigator.share({
-                title: 'Check out this product',
-                url: shareLink
-            });
-        } else {
-            toggleShareMenu();
-        }
+        toggleShareMenu();
     }
 });
 
@@ -274,8 +267,12 @@ document.querySelectorAll('.share-option').forEach(option => {
                 window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareLink)}`, '_blank');
                 break;
             case 'copy':
-                navigator.clipboard.writeText(shareLink)
-                    .then(() => alert('Link copied to clipboard!'))
+                 if (navigator.share) {
+                    navigator.share({
+                        title: 'Check out this product',
+                        url: shareLink
+                    });
+                }
                 break;
             case 'open':
                 window.open(`${shareLink}`, '_blank');
