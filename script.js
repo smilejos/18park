@@ -249,44 +249,17 @@ document.getElementById('closeViewer').addEventListener('click', () => {
 
 document.getElementById('shareButton').addEventListener('click', () => {
     if (shareLink) {
-        toggleShareMenu();
-    }
-});
-
-
-function toggleShareMenu() {
-    const shareMenu = document.getElementById('shareMenu');
-    shareMenu.style.display = shareMenu.style.display === 'block' ? 'none' : 'block';
-}
-
-document.querySelectorAll('.share-option').forEach(option => {
-    option.addEventListener('click', (e) => {
-        const action = e.currentTarget.dataset.action;
-        switch(action) {
-            case 'line':
-                window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareLink)}`, '_blank');
-                break;
-            case 'copy':
-                 if (navigator.share) {
-                    navigator.share({
-                        title: 'Check out this product',
-                        url: shareLink
-                    });
-                }
-                break;
-            case 'open':
-                window.open(`${shareLink}`, '_blank');
-                break;
+        if (navigator.share) {
+            navigator.share({
+                title: 'Check out this product',
+                url: shareLink
+            });
+        } else {
+            window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareLink)}`, '_blank');
         }
-        toggleShareMenu();
-    });
+    }
 });
 
-// Close share menu when clicking outside
-document.addEventListener('click', (e) => {
-    const shareMenu = document.getElementById('shareMenu');
-    const shareButton = document.getElementById('shareButton');
-    if (shareMenu.style.display === 'block' && (e.target !== shareButton && e.target !== shareFavorites ) && !shareMenu.contains(e.target)) {
-        toggleShareMenu();
-    }
+document.getElementById('openWebsite').addEventListener('click', () => {
+    window.open(`${shareLink}`, '_blank');
 });
