@@ -68,10 +68,9 @@ function getCookie(name) {
 function clearFavorites() {
     favoriteProducts = [];   
     setCookie('favorites', JSON.stringify(favoriteProducts), 30);  // Store for 30 days
-    
-
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = '';
+    currentPage = 0;
     loadMoreItems();
 }
 
@@ -105,21 +104,29 @@ function loadMoreItems() {
         if (product.images.length > 0) {
             const item = document.createElement('div');
             const isFavorite = favoriteProductIds.indexOf(product.id) > -1; 
-            console.log(favoriteProducts, isFavorite, product);
-            item.className = isShowingShare ? 'gallery-item' : (isFavorite ? 'gallery-item item-favorite' : 'gallery-item');
+            item.id = product.id;
+            item.className = 'gallery-item position-relative';
             item.innerHTML = '<div style="width: 100%; height: 100%; background-color: #333;"></div>';
             item.addEventListener('click', () => openViewer(product, startIndex + index));
             gallery.appendChild(item);
-
+    
             const img = new Image();
             img.src = product.images[0];
+            img.className = "img-thumbnail rounded mx-auto d-block";
             img.onload = () => {
                 item.innerHTML = '';
                 item.appendChild(img);
+
+                if(isFavorite) {
+                    const badge = document.createElement('span');
+                    badge.className = "badge rounded-pill bg-danger";
+                    badge.innerText = 'Favorite';
+                    item.appendChild(badge);
+                    console.log(badge);
+                }
             };
         }
     });
-
     currentPage++;
 }
 
@@ -174,12 +181,22 @@ function isFavorite(product) {
 
 function toggleFavorite() {
     const saveFavorite = document.getElementById('saveFavorite');
+    const currentItem = document.getElementById(currentProduct.id);
     if (isFavorite(currentProduct)) {
         favoriteProducts = favoriteProducts.filter(product => product.id !== currentProduct.id);
         saveFavorite.classList.remove('active');
+        
+        const badge = currentItem.querySelector('span.badge');
+        console.log("plan to remove", badge);
+        currentItem.removeChild(badge);
     } else {
         favoriteProducts.push(currentProduct);
         saveFavorite.classList.add('active');
+
+        const badge = document.createElement('span');
+        badge.className = "badge rounded-pill bg-danger";
+        badge.innerText = 'Favorite';
+        currentItem.appendChild(badge);
     }
     setCookie('favorites', JSON.stringify(favoriteProducts), 30);  // Store for 30 days
 }
@@ -190,7 +207,7 @@ function toggleFavoriteView() {
     const toggleButton = document.getElementById('toggleFavorites');
     gallery.innerHTML = '';
     currentPage = 0;
-    toggleButton.textContent = showingFavorites ? 'Show All' : 'Show Favorites';
+    toggleButton.textContent = showingFavorites ? '呈現全部' : '呈現收藏';
     loadMoreItems();
 }
 
