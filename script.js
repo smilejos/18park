@@ -89,10 +89,11 @@ function loadMoreItems() {
 
     if(isShowingShare) {
         allProducts = allProducts.filter(item => shareProductIds.indexOf(item.id + "") > -1);
-        const saveFavorite = document.getElementById('saveFavorite');
         const toggleFavorites = document.getElementById('toggleFavorites');
         const shareFavorites = document.getElementById('shareFavorites');
-        saveFavorite.hidden = true;
+        const clearFavorites = document.getElementById('clearFavorites');
+        
+        clearFavorites.hidden = true;
         toggleFavorites.hidden = true;
         shareFavorites.hidden = true;
     }
