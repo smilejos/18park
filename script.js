@@ -154,8 +154,13 @@ function openViewer(product, index) {
         });
         thumbnailContainer.appendChild(thumbnail);
     });
+
+    if(isShowingShare) {
+        saveFavorite.hidden = true;
+    } else {
+        saveFavorite.classList.toggle('active', isFavorite(product));
+    }
     
-    saveFavorite.classList.toggle('active', isFavorite(product));
     viewer.style.display = 'block';
     setupGestures();
 }
