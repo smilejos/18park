@@ -79,7 +79,7 @@ function shareFavorite() {
     let paramters = Ids.join(",");
     let url = location.origin + location.pathname + "?id=" + paramters;
     shareLink = url;
-    toggleShareMenu();
+    shareLinkToSomeone();
 }
 
 function loadMoreItems() {
@@ -123,7 +123,6 @@ function loadMoreItems() {
                     badge.className = "badge rounded-pill bg-danger";
                     badge.innerText = 'Favorite';
                     item.appendChild(badge);
-                    console.log(badge);
                 }
             };
         }
@@ -248,6 +247,14 @@ document.getElementById('closeViewer').addEventListener('click', () => {
 });
 
 document.getElementById('shareButton').addEventListener('click', () => {
+    shareLinkToSomeone();
+});
+
+document.getElementById('openWebsite').addEventListener('click', () => {
+    window.open(`${shareLink}`, '_blank');
+});
+
+function shareLinkToSomeone() {
     if (shareLink) {
         if (navigator.share) {
             navigator.share({
@@ -258,8 +265,4 @@ document.getElementById('shareButton').addEventListener('click', () => {
             window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareLink)}`, '_blank');
         }
     }
-});
-
-document.getElementById('openWebsite').addEventListener('click', () => {
-    window.open(`${shareLink}`, '_blank');
-});
+}
