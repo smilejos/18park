@@ -10,7 +10,7 @@ let shareLink = "";
 const itemsPerPage = 20;
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadFavoritesFromCookie();
+    loadFavoritesFromStorage();
     loadDataFromHref();
     fetch('product_images.json')
         .then(response => response.json())
@@ -39,35 +39,30 @@ function loadDataFromHref() {
     }
     
 }
-function loadFavoritesFromCookie() {
-    const favoriteCookie = getCookie('favorites');
-    if (favoriteCookie) {
-        favoriteProducts = JSON.parse(favoriteCookie);
+
+function loadFavoritesFromStorage() {
+    const favoritesData = getFromLocalStorage('favorites');
+    if (favoritesData) {
+        favoriteProducts = favoritesData;
     }
 }
 
-
-function setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+function saveToLocalStorage(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
 }
 
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
+function getFromLocalStorage(key) {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+}
+
+function removeFromLocalStorage(key) {
+    localStorage.removeItem(key);
 }
 
 function clearFavorites() {
     favoriteProducts = [];   
-    setCookie('favorites', JSON.stringify(favoriteProducts), 30);  // Store for 30 days
+    saveToLocalStorage('favorites', favoriteProducts);
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = '';
     currentPage = 0;
@@ -187,8 +182,9 @@ function toggleFavorite() {
         saveFavorite.classList.remove('active');
         
         const badge = currentItem.querySelector('span.badge');
-        console.log("plan to remove", badge);
-        currentItem.removeChild(badge);
+        if (badge) {
+            currentItem.removeChild(badge);
+        }
     } else {
         favoriteProducts.push(currentProduct);
         saveFavorite.classList.add('active');
@@ -198,7 +194,7 @@ function toggleFavorite() {
         badge.innerText = 'Favorite';
         currentItem.appendChild(badge);
     }
-    setCookie('favorites', JSON.stringify(favoriteProducts), 30);  // Store for 30 days
+    saveToLocalStorage('favorites', favoriteProducts);
 }
 
 function toggleFavoriteView() {
